@@ -1,10 +1,10 @@
 <template>
   <div class="lineChart">
-    <line-chart ref="lineChart" :chart-data="chartData" :options="options" />
     <button @click="addData">점 추가</button>
     <button @click="removeData">점 삭제</button>
     <button @click="addDataset">라인 추가</button>
     <button @click="removeDataset">라인 삭제</button>
+    <line-chart ref="lineChart" :styles="chartStyles" :chart-data="chartData" :options="options" />
   </div>
 </template>
 
@@ -22,31 +22,17 @@ export default {
   },
   data() {
     return {
+      height: 400,
       chartData: {},
       datasets: [],
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        // title: {
-        //   display: true,
-        //   text: 'Custom Chart Title',
-        // },
         legend: {
           display: true,
           position: 'top',
           align: 'start',
-          // labels: {
-          //   fontColor: 'rgb(255, 99, 132)',
-          // },
         },
-        // layout: {
-        //   padding: {
-        //     left: 50,
-        //     right: 50,
-        //     top: 50,
-        //     bottom: 50,
-        //   },
-        // },
         scales: {
           x: {
             type: 'time',
@@ -78,40 +64,31 @@ export default {
           },
         },
         tooltips: {
-          mode: 'index',
-          intersect: false,
+          mode: 'point',
+          intersect: true,
         },
-        // elements: {
-        //   point: {
-        //     pointStyle: 'circle',
-        //   },
-        // },
-        // plugins: {
-        //   deferred: {
-        //     xOffset: '50%',
-        //     delay: 1000,
-        //   },
-        //   crosshair: {
-        //     sync: {
-        //       enabled: false,
-        //     },
-        //     zoom: {
-        //       enabled: false,
-        //     },
-        //   },
-        // },
       },
     };
   },
+  created() {
+    this.chartData.datasets = [];
+  },
   mounted() {
     this.load();
+  },
+ computed: {
+    chartStyles () {
+      return {
+        height: `${400 + this.chartData.datasets.length * 5}px`,
+        position: 'relative'
+      }
+    }
   },
   methods: {
     getChartColor() {
       const colorNames = Object.keys(chartColors);
       const colorName = colorNames[this.chartData.datasets.length % colorNames.length];
       const newColor = chartColors[colorName];
-      // console.log(`getChartColor() - colorName: ${colorName}, newColor: ${newColor}`);
       return newColor;
     },
     load() {
@@ -178,17 +155,13 @@ export default {
         label: `GET /my/v1.0/aaa/${this.chartData.datasets.length}`,
         borderColor: this.getChartColor(),
         backgroundColor: this.getChartColor(),
+        cubicInterpolationMode: 'monotone',
         fill: false,
         data: [],
       };
       for (let i = 0; i < this.chartData.labels.length; i++) {
         newDataset.data.push(this.randomScalingFactor());
       }
-      // if (this.chartData.datasets.length % 5 === 0) {
-      //   const lineChart = document.getElementById('line-chart');
-      //   lineChart.style.height = `${400 + this.chartData.datasets.length * 5}px`;
-      //   this.$refs.lineChart.update();
-      // }
       this.chartData.datasets.push(newDataset);
       this.$refs.lineChart.update();
     },
@@ -211,18 +184,5 @@ export default {
   button {
     margin-left: 5px;
   }
-}
-.customFields {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 50px;
-}
-.radioBtnSeries {
-  display: flex;
-  justify-content: center;
-}
-.radioBtnSeries label {
-  margin-right: 30px;
 }
 </style>
