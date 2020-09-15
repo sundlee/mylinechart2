@@ -64,8 +64,28 @@ export default {
           },
         },
         tooltips: {
-          mode: 'point',
-          intersect: true,
+          mode: 'nearest',
+          intersect: false,
+          backgroundColor: '#4F5565',
+          titleFontStyle: 'normal',
+          titleFontSize: 16,
+          bodyFontFamily: "'Noto Sans KR', sans-serif",
+          cornerRadius: 3,
+          bodyFontColor: '#20C4C8',
+          bodyFontSize: 14,
+          xPadding: 8,
+          yPadding: 8,
+          displayColors: false,
+          callbacks: {
+            title: tooltipItem => {
+              return `${tooltipItem[0].xLabel}`
+            },
+            label: (tooltipItem, data) => {
+              let dataset = data.datasets[tooltipItem.datasetIndex]
+              let currentValue = dataset.data[tooltipItem.index]
+              return `호출카운트: ${currentValue.toLocaleString()}`
+            }
+          }
         },
       },
     };

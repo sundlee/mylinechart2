@@ -1,5 +1,4 @@
 module.exports = {
   lintOnSave: false,
-  // outputDir: './mylinechart',
-  publicPath: '/mylinechart2/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/mylinechart2/' : '/'
 };
